@@ -11,7 +11,7 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
     {
     }
     public DbSet<Message> Messages { get; set; }
-
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -35,5 +35,8 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
             .HasOne(c => c.Message)
             .WithMany(q => q.Flags);
     }
+    
+
+    // public DbSet<Broadcast.Models.Vote> Vote { get; set; }
 }
 

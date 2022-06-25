@@ -16298,8 +16298,28 @@
   "RootNamespace": "Broadcast",
   "Documents": [
     {
+      "FilePath": "c:\\Users\\edwar\\OneDrive\\Desktop\\SoftwareDevelopment\\FinalProject\\Broadcast\\Views\\Votes\\Edit.cshtml",
+      "TargetPath": "Views\\Votes\\Edit.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\edwar\\OneDrive\\Desktop\\SoftwareDevelopment\\FinalProject\\Broadcast\\Views\\Messages\\Details.cshtml",
+      "TargetPath": "Views\\Messages\\Details.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "c:\\Users\\edwar\\OneDrive\\Desktop\\SoftwareDevelopment\\FinalProject\\Broadcast\\Areas\\Identity\\Pages\\_ViewStart.cshtml",
       "TargetPath": "Areas\\Identity\\Pages\\_ViewStart.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\edwar\\OneDrive\\Desktop\\SoftwareDevelopment\\FinalProject\\Broadcast\\Views\\Messages\\Create.cshtml",
+      "TargetPath": "Views\\Messages\\Create.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\edwar\\OneDrive\\Desktop\\SoftwareDevelopment\\FinalProject\\Broadcast\\Views\\Votes\\Create.cshtml",
+      "TargetPath": "Views\\Votes\\Create.cshtml",
       "FileKind": "mvc"
     },
     {
@@ -16310,6 +16330,11 @@
     {
       "FilePath": "c:\\Users\\edwar\\OneDrive\\Desktop\\SoftwareDevelopment\\FinalProject\\Broadcast\\Views\\Home\\Index.cshtml",
       "TargetPath": "Views\\Home\\Index.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\edwar\\OneDrive\\Desktop\\SoftwareDevelopment\\FinalProject\\Broadcast\\Views\\Votes\\Index.cshtml",
+      "TargetPath": "Views\\Votes\\Index.cshtml",
       "FileKind": "mvc"
     },
     {
@@ -16328,6 +16353,11 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "c:\\Users\\edwar\\OneDrive\\Desktop\\SoftwareDevelopment\\FinalProject\\Broadcast\\Views\\Messages\\Delete.cshtml",
+      "TargetPath": "Views\\Messages\\Delete.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "c:\\Users\\edwar\\OneDrive\\Desktop\\SoftwareDevelopment\\FinalProject\\Broadcast\\Views\\_ViewStart.cshtml",
       "TargetPath": "Views\\_ViewStart.cshtml",
       "FileKind": "mvc"
@@ -16338,8 +16368,28 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "c:\\Users\\edwar\\OneDrive\\Desktop\\SoftwareDevelopment\\FinalProject\\Broadcast\\Views\\Votes\\Details.cshtml",
+      "TargetPath": "Views\\Votes\\Details.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "c:\\Users\\edwar\\OneDrive\\Desktop\\SoftwareDevelopment\\FinalProject\\Broadcast\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
       "TargetPath": "Views\\Shared\\_ValidationScriptsPartial.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\edwar\\OneDrive\\Desktop\\SoftwareDevelopment\\FinalProject\\Broadcast\\Views\\Votes\\Delete.cshtml",
+      "TargetPath": "Views\\Votes\\Delete.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\edwar\\OneDrive\\Desktop\\SoftwareDevelopment\\FinalProject\\Broadcast\\Views\\Messages\\Index.cshtml",
+      "TargetPath": "Views\\Messages\\Index.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\edwar\\OneDrive\\Desktop\\SoftwareDevelopment\\FinalProject\\Broadcast\\Views\\Messages\\Edit.cshtml",
+      "TargetPath": "Views\\Messages\\Edit.cshtml",
       "FileKind": "mvc"
     }
   ],
