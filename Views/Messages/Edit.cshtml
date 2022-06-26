@@ -13,7 +13,8 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="MessageId" />
-            @* <div class="form-group">
+            @* //we're auto date stamping tmessages
+            <div class="form-group">   
                 <label asp-for="DateStamp" class="control-label"></label>
                 <input asp-for="DateStamp" class="form-control" />
                 <span asp-validation-for="DateStamp" class="text-danger"></span>

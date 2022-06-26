@@ -8,85 +8,85 @@ build_property.PlatformNeutralAssembly =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Broadcast
 build_property.RootNamespace = Broadcast
-build_property.ProjectDir = c:\Users\edwar\OneDrive\Desktop\SoftwareDevelopment\FinalProject\Broadcast\
+build_property.ProjectDir = C:\Users\edwar\OneDrive\Desktop\SoftwareDevelopment\FinalProject\Broadcast\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = c:\Users\edwar\OneDrive\Desktop\SoftwareDevelopment\FinalProject\Broadcast
+build_property.MSBuildProjectDirectory = C:\Users\edwar\OneDrive\Desktop\SoftwareDevelopment\FinalProject\Broadcast
 build_property._RazorSourceGeneratorDebug = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Areas/Identity/Pages/_ViewStart.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Areas/Identity/Pages/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Home/Index.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Home/Privacy.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Messages/Create.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Messages/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVzc2FnZXNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Messages/Delete.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Messages/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVzc2FnZXNcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Messages/Details.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Messages/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVzc2FnZXNcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Messages/Edit.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Messages/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVzc2FnZXNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Messages/Index.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Messages/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVzc2FnZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Shared/Error.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Shared/_LoginPartial.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Shared/_LoginPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2dpblBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Votes/Create.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Votes/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVm90ZXNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Votes/Delete.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Votes/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVm90ZXNcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Votes/Details.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Votes/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVm90ZXNcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Votes/Edit.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Votes/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVm90ZXNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Votes/Index.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Votes/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVm90ZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/_ViewImports.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/_ViewStart.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Shared/_Layout.cshtml]
+[C:/Users/edwar/OneDrive/Desktop/SoftwareDevelopment/FinalProject/Broadcast/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-cwx4z1h326
