@@ -2,6 +2,7 @@
 using WebApi.Authorization;
 using WebApi.Helpers;
 using WebApi.Services;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,13 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 {
     var services = builder.Services;
     var env = builder.Environment;
- 
+
     // use sql server db in production and sqlite db in development
     if (env.IsProduction())
-        services.AddDbContext<DataContext>();
+        services.AddDbContext<DataContext, SqliteDataContext>();
     else
         services.AddDbContext<DataContext, SqliteDataContext>();
- 
+
     services.AddCors();
     services.AddControllers();
 
@@ -24,6 +25,17 @@ var builder = WebApplication.CreateBuilder(args);
 
     // configure strongly typed settings object
     services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+
+    // configure Swagger 
+    services.AddMvc();
+    services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "BROADCAST API",
+            Version = "v1"
+        });
+    });
 
     // configure DI for application services
     services.AddScoped<IJwtUtils, JwtUtils>();
@@ -35,7 +47,7 @@ var app = builder.Build();
 // migrate any database changes on startup (includes initial db creation)
 using (var scope = app.Services.CreateScope())
 {
-    var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();    
+    var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
     dataContext.Database.Migrate();
 }
 
@@ -52,6 +64,14 @@ using (var scope = app.Services.CreateScope())
 
     // custom jwt auth middleware
     app.UseMiddleware<JwtMiddleware>();
+
+    // swagger
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "BROADCAST API V1");
+    });
+
 
     app.MapControllers();
 }
