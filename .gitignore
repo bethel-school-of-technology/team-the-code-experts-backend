@@ -42,4 +42,3 @@ bin
 obj
 
 # local sqlite db that is auto generated
-BroadcastDatabase.db
