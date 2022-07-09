@@ -30,7 +30,17 @@ namespace WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Message>>> GetMessages()
         {
-            return await _context.Messages.ToListAsync();
+
+            var msg = _context.Messages.Include(m => m.Votes).Include(m => m.Flags);
+            return await msg.ToListAsync();
+        }
+
+        // GET: api/Messages ***DESCENDING ORDER***
+        [HttpGet("descending")]
+        public async Task<ActionResult<IEnumerable<Message>>> GetMessagesDesc()
+        {
+            var msg = _context.Messages.Include(m => m.Votes).Include(m => m.Flags);
+            return await msg.OrderByDescending(d => d.DateStamp).ToListAsync();
         }
 
         // GET: api/Messages/5
@@ -50,9 +60,9 @@ namespace WebApi.Controllers
         // PUT: api/Messages/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMessage(int id, Message message)
+        public async Task<IActionResult> PutMessage(int id, [Bind("MessageId,UserId,DateStamp,MessageTitle,MessageBody")] Message message)
         {
-            
+
             if (id != message.MessageId)
             {
                 return BadRequest();
@@ -79,15 +89,47 @@ namespace WebApi.Controllers
             return NoContent();
         }
 
+        // PUT: api/Messages/5 VOTING
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // [HttpPut("{id}")]
+        // public async Task<IActionResult> PutVote(int id, [Bind("MessageId,UserId,DateStamp,MessageTitle,MessageBody")] Message message, Vote vote)
+        // {
+
+        //     if (id != message.MessageId)
+        //     {
+        //         return BadRequest();
+        //     }
+
+        //     _context.Entry(message).State = EntityState.Modified;
+
+        //     try
+        //     {
+        //         await _context.SaveChangesAsync();
+        //     }
+        //     catch (DbUpdateConcurrencyException)
+        //     {
+        //         if (!MessageExists(id))
+        //         {
+        //             return NotFound();
+        //         }
+        //         else
+        //         {
+        //             throw;
+        //         }
+        //     }
+
+        //     return NoContent();
+        // }
+
         // POST: api/Messages
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Message>> PostMessage(Message message)
         {
             JsonSerializerOptions options = new()
-            {   
+            {
                 //switch to Always to ignore
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault 
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
             };
             var currentUser = (User)HttpContext.Items["User"];
             message.UserId = currentUser.Id;

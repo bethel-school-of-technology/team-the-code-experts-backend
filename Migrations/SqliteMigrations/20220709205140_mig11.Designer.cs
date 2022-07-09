@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApi.Helpers;
 
@@ -10,9 +11,10 @@ using WebApi.Helpers;
 namespace WebApi.Migrations.SqliteMigrations
 {
     [DbContext(typeof(SqliteDataContext))]
-    partial class SqliteDataContextModelSnapshot : ModelSnapshot
+    [Migration("20220709205140_mig11")]
+    partial class mig11
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
@@ -23,7 +25,7 @@ namespace WebApi.Migrations.SqliteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MessageId")
+                    b.Property<int?>("MessageId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("UserId")
@@ -33,7 +35,7 @@ namespace WebApi.Migrations.SqliteMigrations
 
                     b.HasIndex("MessageId");
 
-                    b.ToTable("Flags");
+                    b.ToTable("Flag");
                 });
 
             modelBuilder.Entity("Broadcast_JWT.Models.FollowingUser", b =>
@@ -133,11 +135,11 @@ namespace WebApi.Migrations.SqliteMigrations
 
             modelBuilder.Entity("Broadcast_JWT.Models.Flag", b =>
                 {
-                    b.HasOne("Broadcast_JWT.Models.Message", null)
+                    b.HasOne("Broadcast_JWT.Models.Message", "Message")
                         .WithMany("Flags")
-                        .HasForeignKey("MessageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MessageId");
+
+                    b.Navigation("Message");
                 });
 
             modelBuilder.Entity("Broadcast_JWT.Models.FollowingUser", b =>

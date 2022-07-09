@@ -9,7 +9,7 @@ public class Message
     public DateTime DateStamp { get; set; }
     public string MessageTitle { get; set; }
     public string MessageBody { get; set; }
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]  //Ignore for POST activities - Alternative may be JsonIncludeAttribute
+    // [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]  //Ignore for POST activities - Alternative may be JsonIncludeAttribute
     public IEnumerable<Vote> Votes { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]  //Ignore for POST activities
     public IEnumerable<Flag> Flags { get; set; }

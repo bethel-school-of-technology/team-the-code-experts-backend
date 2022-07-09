@@ -22,6 +22,8 @@ public class DataContext : DbContext
     public DbSet<Message> Messages { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<FollowingUser> FollowingUsers {get; set;}
+    public DbSet<Vote> Votes {get; set;}
+    public DbSet<Flag> Flags {get; set;}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -35,15 +37,15 @@ public class DataContext : DbContext
         //     .HasOne(c => c.AppUser)
         //     .WithMany(q => q.FollowingUsers);
 
-        base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<Vote>()
-            .HasOne(c => c.Message)
-            .WithMany(q => q.Votes);
+        // base.OnModelCreating(modelBuilder);
+        // modelBuilder.Entity<Vote>()
+        //     .HasOne(c => c.Message)
+        //     .WithMany(q => q.Votes);
 
-        base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<Flag>()
-            .HasOne(c => c.Message)
-            .WithMany(q => q.Flags);
+        // base.OnModelCreating(modelBuilder);
+        // modelBuilder.Entity<Flag>()
+        //     .HasOne(c => c.Message)
+        //     .WithMany(q => q.Flags);
 
 
     }
