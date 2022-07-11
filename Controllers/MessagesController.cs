@@ -89,37 +89,7 @@ namespace WebApi.Controllers
             return NoContent();
         }
 
-        // PUT: api/Messages/5 VOTING
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> PutVote(int id, [Bind("MessageId,UserId,DateStamp,MessageTitle,MessageBody")] Message message, Vote vote)
-        // {
-
-        //     if (id != message.MessageId)
-        //     {
-        //         return BadRequest();
-        //     }
-
-        //     _context.Entry(message).State = EntityState.Modified;
-
-        //     try
-        //     {
-        //         await _context.SaveChangesAsync();
-        //     }
-        //     catch (DbUpdateConcurrencyException)
-        //     {
-        //         if (!MessageExists(id))
-        //         {
-        //             return NotFound();
-        //         }
-        //         else
-        //         {
-        //             throw;
-        //         }
-        //     }
-
-        //     return NoContent();
-        // }
+       
 
         // POST: api/Messages
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -160,5 +130,52 @@ namespace WebApi.Controllers
         {
             return _context.Messages.Any(e => e.MessageId == id);
         }
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~VOTING HTTP ACTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+        // GET: api/Votes/5
+        [HttpGet("Votes/{id}")]
+        public async Task<ActionResult<Vote>> GetVote(int id)
+        {
+            var vote = await _context.Votes.FindAsync(id);
+
+            if (vote == null)
+            {
+                return NotFound();
+            }
+
+            return vote;
+        }
+
+        // POST: api/Votes DOWNVOTE
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost("Downvote/{id}")]
+        public async Task<ActionResult<Vote>> PostDownVote(int id, Vote vote)
+        {
+            vote.DownVote=true;
+            var currentUser = (User)HttpContext.Items["User"];
+            vote.UserId = currentUser.Id;
+            // vote.MessageId = id;
+            _context.Votes.Add(vote);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetVote", new { id = vote.VoteId }, vote);
+        }
+
+        // POST: api/Votes UPVOTE
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost("Upvote/{id}")]
+        public async Task<ActionResult<Vote>> PostUpVote(int id, Vote vote)
+        {
+            vote.UpVote=true;
+            var currentUser = (User)HttpContext.Items["User"];
+            vote.UserId = currentUser.Id;
+            // vote.MessageId = id;
+            _context.Votes.Add(vote);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetVote", new { id = vote.VoteId }, vote);
+        }
+
     }
 }
