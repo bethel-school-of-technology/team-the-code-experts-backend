@@ -43,6 +43,25 @@ namespace WebApi.Controllers
             return await msg.OrderByDescending(d => d.DateStamp).ToListAsync();
         }
 
+        // GET: api/Messages
+        [HttpGet("MyMessages")]
+        public async Task<ActionResult<IEnumerable<Message>>> GetMyMessages()
+        {
+            var currentUser = (User)HttpContext.Items["User"];
+            var msg = _context.Messages.Include(m => m.Votes).Include(m => m.Flags).Where(my=>my.UserId==currentUser.Id);
+            return await msg.ToListAsync();
+        }
+        
+        // GET: api/Messages
+        [HttpGet("UserMessages/{id}")]
+        public async Task<ActionResult<IEnumerable<Message>>> GetUserMessages(int id)
+        {
+
+            var msg = _context.Messages.Include(m => m.Votes).Include(m => m.Flags).Where(my=>my.UserId==id);
+            return await msg.ToListAsync();
+        }
+
+
         // GET: api/Messages/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Message>> GetMessage(int id)
