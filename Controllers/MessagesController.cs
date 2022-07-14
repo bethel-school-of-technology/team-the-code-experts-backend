@@ -157,6 +157,7 @@ namespace WebApi.Controllers
             vote.UserId = currentUser.Id;
             // vote.MessageId = id;
             _context.Votes.Add(vote);
+            
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetVote", new { id = vote.VoteId }, vote);

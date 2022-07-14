@@ -7,6 +7,8 @@ using WebApi.Authorization;
 using WebApi.Helpers;
 using WebApi.Models.Users;
 using WebApi.Services;
+using Broadcast_JWT.Models;
+using WebApi.Entities;
 
 [Authorize]
 [ApiController]
@@ -61,6 +63,15 @@ public class UsersController : ControllerBase
     public IActionResult Update(int id, UpdateRequest model)
     {
         _userService.Update(id, model);
+        return Ok(new { message = "User updated successfully" });
+    }
+
+
+    [HttpPut("update")]
+    public IActionResult UpdateUser(UpdateRequest model)
+    {
+        var currentUser = (User)HttpContext.Items["User"];
+        _userService.Update(currentUser.Id, model);
         return Ok(new { message = "User updated successfully" });
     }
 
