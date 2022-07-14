@@ -41,4 +41,6 @@ typings
 bin
 obj
 
-# local sqlite db that is auto generated
+# local sqlite db temp files that is auto generated
+*.db-shm
+*.db-wal
