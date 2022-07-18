@@ -31,7 +31,10 @@ namespace WebApi.Controllers
         public async Task<ActionResult<IEnumerable<Message>>> GetMessages()
         {
 
-            var msg = _context.Messages.Include(m => m.Votes).Include(m => m.Flags);
+            var msg = _context.Message.Include(m => m.Votes)
+                                        .Include(m => m.Flags)
+                                        .Include(m => m.Responses)
+                                        .Include(m => m.AppUser);
             return await msg.ToListAsync();
         }
 
@@ -39,25 +42,40 @@ namespace WebApi.Controllers
         [HttpGet("descending")]
         public async Task<ActionResult<IEnumerable<Message>>> GetMessagesDesc()
         {
-            var msg = _context.Messages.Include(m => m.Votes).Include(m => m.Flags);
+            var msg = _context.Message.Include(m => m.Votes)
+                                        .Include(m => m.Flags)
+                                        .Include(m => m.Responses)
+                                        .Include(m => m.AppUser);
             return await msg.OrderByDescending(d => d.DateStamp).ToListAsync();
         }
 
         // GET: api/Messages
         [HttpGet("MyMessages")]
         public async Task<ActionResult<IEnumerable<Message>>> GetMyMessages()
+        // {
+        //     var currentUser = (User)HttpContext.Items["User"];
+        //     var msg = _context.Messages.Include(m => m.Votes).Include(m => m.Flags).Where(my => my.UserId == currentUser.Id);
+        //     return await msg.ToListAsync();
+        // }
         {
             var currentUser = (User)HttpContext.Items["User"];
-            var msg = _context.Messages.Include(m => m.Votes).Include(m => m.Flags).Where(my=>my.UserId==currentUser.Id);
+            // var vt = _context.Votes.Where(v=>v.UserId==currentUser.Id).OrderByDescending(m=>m.VoteId).FirstOrDefault();
+            var msg = _context.Message.Where(my => my.AppUser == currentUser)
+                                        .Include(m => m.Flags)
+                                        .Include(m => m.Responses)
+                                        .Include(m => m.Votes);
             return await msg.ToListAsync();
         }
-        
+
         // GET: api/Messages
         [HttpGet("UserMessages/{id}")]
         public async Task<ActionResult<IEnumerable<Message>>> GetUserMessages(int id)
         {
 
-            var msg = _context.Messages.Include(m => m.Votes).Include(m => m.Flags).Where(my=>my.UserId==id);
+            var msg = _context.Message.Include(m => m.Votes)
+                                        .Include(m => m.Flags)
+                                        .Include(m => m.Responses)
+                                        .Where(my => my.AppUser.Id == id);
             return await msg.ToListAsync();
         }
 
@@ -66,7 +84,12 @@ namespace WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Message>> GetMessage(int id)
         {
-            var message = await _context.Messages.FindAsync(id);
+            // var message = await _context.Message.FindAsync(id);
+            var message = await _context.Message.Include(m => m.Votes)
+                                        .Include(m => m.Flags)
+                                        .Include(m => m.Responses)
+                                        .Include(m => m.AppUser)
+                                        .SingleOrDefaultAsync(i => i.MessageId == id);
 
             if (message == null)
             {
@@ -87,6 +110,7 @@ namespace WebApi.Controllers
                 return BadRequest();
             }
 
+            message.DateStamp = DateTime.Now;
             _context.Entry(message).State = EntityState.Modified;
 
             try
@@ -108,7 +132,7 @@ namespace WebApi.Controllers
             return NoContent();
         }
 
-       
+
 
         // POST: api/Messages
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -121,9 +145,9 @@ namespace WebApi.Controllers
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
             };
             var currentUser = (User)HttpContext.Items["User"];
-            message.UserId = currentUser.Id;
+            message.AppUser = currentUser;
             message.DateStamp = DateTime.Now;
-            _context.Messages.Add(message);
+            _context.Message.Add(message);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetMessage", new { id = message.MessageId }, message);
@@ -133,13 +157,13 @@ namespace WebApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMessage(int id)
         {
-            var message = await _context.Messages.FindAsync(id);
+            var message = await _context.Message.FindAsync(id);
             if (message == null)
             {
                 return NotFound();
             }
 
-            _context.Messages.Remove(message);
+            _context.Message.Remove(message);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -147,16 +171,16 @@ namespace WebApi.Controllers
 
         private bool MessageExists(int id)
         {
-            return _context.Messages.Any(e => e.MessageId == id);
+            return _context.Message.Any(e => e.MessageId == id);
         }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~VOTING HTTP ACTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~VOTING HTTP ACTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
         // GET: api/Votes/5
         [HttpGet("Votes/{id}")]
         public async Task<ActionResult<Vote>> GetVote(int id)
         {
-            var vote = await _context.Votes.FindAsync(id);
+            var vote = await _context.Vote.FindAsync(id);
 
             if (vote == null)
             {
@@ -166,36 +190,146 @@ namespace WebApi.Controllers
             return vote;
         }
 
-        // POST: api/Votes DOWNVOTE
+        // // POST: api/Votes DOWNVOTE
+        // // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // [HttpPost("Downvote/{id}")]
+        // public async Task<ActionResult<Vote>> PostDownVote(int id, Vote vote)
+        // {
+
+        //     //if upvote make 1 down vote -1
+        //     vote.Value = -1;
+        //     var currentUser = (User)HttpContext.Items["User"];
+        //     vote.AppUser = currentUser;
+        //     vote.MessageId = id;
+        //     _context.Vote.Add(vote);
+
+        //     await _context.SaveChangesAsync();
+
+        //     return CreatedAtAction("GetVote", new { id = vote.VoteId }, vote); //or should it be getMessage?
+        // }
+
+        // // POST: api/Votes UPVOTE
+        // // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // [HttpPost("Upvote/{id}")]
+        // public async Task<ActionResult<Vote>> PostUpVote(int id, Vote vote)
+        // {
+        //     vote.Value = 1;
+        //     var currentUser = (User)HttpContext.Items["User"];
+        //     vote.AppUser = currentUser;
+        //     vote.MessageId = id;
+        //     _context.Vote.Add(vote);
+        //     await _context.SaveChangesAsync();
+
+        //     return CreatedAtAction("GetVote", new { id = vote.VoteId }, vote);
+        // }
+
+        // POST: api/Votes set vote // this is for if they can submit a 1 or -1 on front end as voteValue for Messages
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("Downvote/{id}")]
-        public async Task<ActionResult<Vote>> PostDownVote(int id, Vote vote)
+        [HttpPost("voteMessage/{id}")]
+        public async Task<ActionResult<Vote>> PostMessageVote(int id, int voteValue, Vote vote)
         {
-            vote.DownVote=true;
+            vote.Value = voteValue;
             var currentUser = (User)HttpContext.Items["User"];
-            vote.UserId = currentUser.Id;
-            // vote.MessageId = id;
-            _context.Votes.Add(vote);
-            
+            vote.AppUser = currentUser;
+            vote.MessageId = id;
+            _context.Vote.Add(vote);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetVote", new { id = vote.VoteId }, vote);
         }
 
-        // POST: api/Votes UPVOTE
+        // POST: api/Votes UPVOTE // this is for if they can submit a 1 or -1 on front end as voteValue for Responses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("Upvote/{id}")]
-        public async Task<ActionResult<Vote>> PostUpVote(int id, Vote vote)
+        [HttpPost("voteResponse/{id}")]
+        public async Task<ActionResult<Vote>> PostResponseVote(int id, int voteValue, Vote vote)
         {
-            vote.UpVote=true;
+            vote.Value = voteValue;
             var currentUser = (User)HttpContext.Items["User"];
-            vote.UserId = currentUser.Id;
-            // vote.MessageId = id;
-            _context.Votes.Add(vote);
+            vote.AppUser = currentUser;
+            vote.MessageResponseId = id;
+            _context.Vote.Add(vote);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetVote", new { id = vote.VoteId }, vote);
         }
+
+
+        // DELETE: api/Votes/5
+        [HttpDelete("vote/{id}")]
+        public async Task<IActionResult> DeleteVote(int id)
+        {
+            var vote = await _context.Vote.FindAsync(id);
+            if (vote == null)
+            {
+                return NotFound();
+            }
+
+            _context.Vote.Remove(vote);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool VoteExists(int id)
+        {
+            return _context.Vote.Any(e => e.VoteId == id);
+        }
+
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FOLLOWING USERS HTTP ACTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+        // GET: api/followingUsers
+        [HttpGet("followingUsers/")]
+        public async Task<ActionResult<IEnumerable<FollowingUser>>> GetFollowingUsers()
+        {
+            JsonSerializerOptions options = new()
+            {
+                //switch to Always to ignore
+                DefaultIgnoreCondition = JsonIgnoreCondition.Never
+            };
+            var following = await _context.FollowingUsers
+                                            .Include(f=>f.AppUser)
+                                            .ToListAsync();
+            return following;
+        }
+
+        // POST: api/FollowingUsers
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost("followingUsers/{id}")]
+        public async Task<ActionResult<FollowingUser>> PostVote(int id, FollowingUser followingUser)
+        {
+
+            var currentUser = (User)HttpContext.Items["User"];
+            followingUser.AppUser = currentUser;
+            followingUser.FollowingUserId = id;
+            _context.FollowingUsers.Add(followingUser);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetFollowingUsers", new { id = followingUser.AppUser }, followingUser);
+        }
+
+        // DELETE: api/followingUsers/5
+        [HttpDelete("followingUsers/{id}")]
+        public async Task<IActionResult> DeleteFollowingUser(int id)
+        {
+            var followingUser = await _context.FollowingUsers.FindAsync(id);
+            if (followingUser == null)
+            {
+                return NotFound();
+            }
+
+            _context.FollowingUsers.Remove(followingUser);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool FollowingUserExists(int id)
+        {
+            return _context.FollowingUsers.Any(e => e.Id == id);
+        }
+
+
 
     }
 }

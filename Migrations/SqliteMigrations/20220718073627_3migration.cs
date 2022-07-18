@@ -4,7 +4,7 @@
 
 namespace WebApi.Migrations.SqliteMigrations
 {
-    public partial class sixthmig : Migration
+    public partial class _3migration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -19,18 +19,19 @@ public class DataContext : DbContext
         options.UseSqlServer(Configuration.GetConnectionString("WebApiDatabase"));
     }
 
-    public DbSet<Message> Messages { get; set; }
+    // public DbSet<Message> Messages { get; set; }
+    public DbSet<FollowingUser> FollowingUsers { get; set; }
     public DbSet<User> Users { get; set; }
-    public DbSet<FollowingUser> FollowingUsers {get; set;}
-    public DbSet<Vote> Votes {get; set;}
-    public DbSet<Flag> Flags {get; set;}
+    public DbSet<Vote> Votes { get; set; }
+    public DbSet<Flag> Flags { get; set; }
+    public DbSet<Response> Responses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // base.OnModelCreating(modelBuilder);
-        // modelBuilder.Entity<Message>()
-        //     .HasOne(c => c.AppUser)
-        //     .WithMany(t => t.Messages);
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<Message>()
+            .HasOne(c => c.AppUser)
+            .WithMany(t => t.Messages);
 
         // base.OnModelCreating(modelBuilder);
         // modelBuilder.Entity<FollowingUser>()
@@ -39,7 +40,7 @@ public class DataContext : DbContext
 
         // base.OnModelCreating(modelBuilder);
         // modelBuilder.Entity<Vote>()
-        //     .HasOne(c => c.Message)
+        //     .HasOne(c =>c.Message)
         //     .WithMany(q => q.Votes);
 
         // base.OnModelCreating(modelBuilder);

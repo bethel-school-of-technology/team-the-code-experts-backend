@@ -10,7 +10,9 @@ public class User
     public string LastName { get; set; }
     public string Email { get; set; }
     public string Username { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
     public IEnumerable<FollowingUser> FollowingUsers { get; set; } //User will be one to many FUserIds
+    [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
     public IEnumerable<Message> Messages { get; set; } //User will be one to many Messages
 
     [JsonIgnore]

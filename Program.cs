@@ -4,6 +4,7 @@ using WebApi.Helpers;
 using WebApi.Services;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -21,7 +22,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         services.AddDbContext<DataContext, SqliteDataContext>();
 
     services.AddCors();
-    services.AddControllers();
+
+    //Add JsonSerializer Options to prevent object cycles
+    services.AddControllers()
+    .AddJsonOptions(o=>o.JsonSerializerOptions
+    .ReferenceHandler=ReferenceHandler.IgnoreCycles);
 
     // configure automapper with all automapper profiles from this assembly
     services.AddAutoMapper(typeof(Program));

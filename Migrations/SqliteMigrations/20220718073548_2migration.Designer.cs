@@ -11,8 +11,8 @@ using WebApi.Helpers;
 namespace WebApi.Migrations.SqliteMigrations
 {
     [DbContext(typeof(SqliteDataContext))]
-    [Migration("20220703052016_eighthmig")]
-    partial class eighthmig
+    [Migration("20220718073548_2migration")]
+    partial class _2migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,19 +25,20 @@ namespace WebApi.Migrations.SqliteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("AppUserId")
+                    b.Property<int>("MessageId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MessageId")
+                    b.Property<int>("ReasonId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("FlagId");
 
-                    b.HasIndex("AppUserId");
-
                     b.HasIndex("MessageId");
 
-                    b.ToTable("Flag");
+                    b.ToTable("Flags");
                 });
 
             modelBuilder.Entity("Broadcast_JWT.Models.FollowingUser", b =>
@@ -46,10 +47,13 @@ namespace WebApi.Migrations.SqliteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("FollowingUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -65,6 +69,9 @@ namespace WebApi.Migrations.SqliteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("DateStamp")
                         .HasColumnType("TEXT");
 
@@ -74,14 +81,35 @@ namespace WebApi.Migrations.SqliteMigrations
                     b.Property<string>("MessageTitle")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("MessageId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AppUserId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Message");
+                });
+
+            modelBuilder.Entity("Broadcast_JWT.Models.Response", b =>
+                {
+                    b.Property<int>("ResponseId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FlagId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MessageId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ResponseId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("MessageId");
+
+                    b.ToTable("Responses");
                 });
 
             modelBuilder.Entity("Broadcast_JWT.Models.Vote", b =>
@@ -90,21 +118,25 @@ namespace WebApi.Migrations.SqliteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("DownVote")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("MessageId")
+                    b.Property<int>("MessageId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("UpVote")
+                    b.Property<int>("ResponseId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("Value")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("VoteId");
 
+                    b.HasIndex("AppUserId");
+
                     b.HasIndex("MessageId");
+
+                    b.HasIndex("ResponseId");
 
                     b.ToTable("Vote");
                 });
@@ -137,50 +169,76 @@ namespace WebApi.Migrations.SqliteMigrations
 
             modelBuilder.Entity("Broadcast_JWT.Models.Flag", b =>
                 {
-                    b.HasOne("WebApi.Entities.User", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId");
-
-                    b.HasOne("Broadcast_JWT.Models.Message", "Message")
+                    b.HasOne("Broadcast_JWT.Models.Message", null)
                         .WithMany("Flags")
-                        .HasForeignKey("MessageId");
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("Message");
+                        .HasForeignKey("MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Broadcast_JWT.Models.FollowingUser", b =>
                 {
                     b.HasOne("WebApi.Entities.User", null)
                         .WithMany("FollowingUsers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Broadcast_JWT.Models.Message", b =>
                 {
-                    b.HasOne("WebApi.Entities.User", null)
+                    b.HasOne("WebApi.Entities.User", "AppUser")
                         .WithMany("Messages")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("AppUserId");
+
+                    b.Navigation("AppUser");
+                });
+
+            modelBuilder.Entity("Broadcast_JWT.Models.Response", b =>
+                {
+                    b.HasOne("WebApi.Entities.User", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("Broadcast_JWT.Models.Message", null)
+                        .WithMany("Responses")
+                        .HasForeignKey("MessageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Broadcast_JWT.Models.Vote", b =>
                 {
-                    b.HasOne("Broadcast_JWT.Models.Message", "Message")
-                        .WithMany("Votes")
-                        .HasForeignKey("MessageId");
+                    b.HasOne("WebApi.Entities.User", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId");
 
-                    b.Navigation("Message");
+                    b.HasOne("Broadcast_JWT.Models.Message", null)
+                        .WithMany("Votes")
+                        .HasForeignKey("MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Broadcast_JWT.Models.Response", null)
+                        .WithMany("Votes")
+                        .HasForeignKey("ResponseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Broadcast_JWT.Models.Message", b =>
                 {
                     b.Navigation("Flags");
 
+                    b.Navigation("Responses");
+
+                    b.Navigation("Votes");
+                });
+
+            modelBuilder.Entity("Broadcast_JWT.Models.Response", b =>
+                {
                     b.Navigation("Votes");
                 });
 
