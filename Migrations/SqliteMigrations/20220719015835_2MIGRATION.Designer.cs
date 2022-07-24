@@ -11,8 +11,8 @@ using WebApi.Helpers;
 namespace WebApi.Migrations.SqliteMigrations
 {
     [DbContext(typeof(SqliteDataContext))]
-    [Migration("20220718073548_2migration")]
-    partial class _2migration
+    [Migration("20220719015835_2MIGRATION")]
+    partial class _2MIGRATION
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,18 +47,15 @@ namespace WebApi.Migrations.SqliteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AppUserId")
+                    b.Property<int?>("AppUserId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("FollowingUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("FollowingUsers");
                 });
@@ -97,11 +94,14 @@ namespace WebApi.Migrations.SqliteMigrations
                     b.Property<int?>("AppUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("FlagId")
+                    b.Property<int?>("FlagId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("MessageId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("ResponseBody")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ResponseId");
 
@@ -121,10 +121,10 @@ namespace WebApi.Migrations.SqliteMigrations
                     b.Property<int?>("AppUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MessageId")
+                    b.Property<int?>("MessageId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ResponseId")
+                    b.Property<int?>("ResponseId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Value")
@@ -178,9 +178,11 @@ namespace WebApi.Migrations.SqliteMigrations
 
             modelBuilder.Entity("Broadcast_JWT.Models.FollowingUser", b =>
                 {
-                    b.HasOne("WebApi.Entities.User", null)
+                    b.HasOne("WebApi.Entities.User", "AppUser")
                         .WithMany("FollowingUsers")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("AppUserId");
+
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Broadcast_JWT.Models.Message", b =>
@@ -215,15 +217,11 @@ namespace WebApi.Migrations.SqliteMigrations
 
                     b.HasOne("Broadcast_JWT.Models.Message", null)
                         .WithMany("Votes")
-                        .HasForeignKey("MessageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MessageId");
 
                     b.HasOne("Broadcast_JWT.Models.Response", null)
                         .WithMany("Votes")
-                        .HasForeignKey("ResponseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ResponseId");
 
                     b.Navigation("AppUser");
                 });

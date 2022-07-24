@@ -11,7 +11,7 @@ public class Vote
     public int VoteId { get; set; }
     // public Message Message { get; set; }
     public int? MessageId { get; set; }
-    public int? MessageResponseId { get; set; } // incase this is the parent message, this will be null
+    public int? ResponseId { get; set; } // incase this is the parent message, this will be null
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
     public User AppUser { get; set; }
 

@@ -11,9 +11,12 @@ using WebApi.Services;
 using WebApi.Entities;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using WebApi.Authorization;
+using System.Data;
 
 namespace WebApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class MessagesController : ControllerBase
@@ -26,7 +29,7 @@ namespace WebApi.Controllers
             _userService = userService;
         }
 
-        // GET: api/Messages
+        // GET: api/Messages ***ASCENDING ORDER***
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Message>>> GetMessages()
         {
@@ -49,17 +52,11 @@ namespace WebApi.Controllers
             return await msg.OrderByDescending(d => d.DateStamp).ToListAsync();
         }
 
-        // GET: api/Messages
+        // GET: api/MyMessages ***ALL MESSAGES BY CURRENT USER***
         [HttpGet("MyMessages")]
         public async Task<ActionResult<IEnumerable<Message>>> GetMyMessages()
-        // {
-        //     var currentUser = (User)HttpContext.Items["User"];
-        //     var msg = _context.Messages.Include(m => m.Votes).Include(m => m.Flags).Where(my => my.UserId == currentUser.Id);
-        //     return await msg.ToListAsync();
-        // }
         {
             var currentUser = (User)HttpContext.Items["User"];
-            // var vt = _context.Votes.Where(v=>v.UserId==currentUser.Id).OrderByDescending(m=>m.VoteId).FirstOrDefault();
             var msg = _context.Message.Where(my => my.AppUser == currentUser)
                                         .Include(m => m.Flags)
                                         .Include(m => m.Responses)
@@ -67,7 +64,7 @@ namespace WebApi.Controllers
             return await msg.ToListAsync();
         }
 
-        // GET: api/Messages
+        // GET: api/UserMessages ***ALL MESSAGES BY USER ID***
         [HttpGet("UserMessages/{id}")]
         public async Task<ActionResult<IEnumerable<Message>>> GetUserMessages(int id)
         {
@@ -77,6 +74,32 @@ namespace WebApi.Controllers
                                         .Include(m => m.Responses)
                                         .Where(my => my.AppUser.Id == id);
             return await msg.ToListAsync();
+        }
+
+        // GET: api/UserMessages ***ALL MESSAGES BY FOLLOWED USERS ID***
+        [HttpGet("FollowingUserMessages/")]
+        public async Task<ActionResult<IList<Message>>> GetFollowingUserMessages()
+        {
+            var currentUser = (User)HttpContext.Items["User"];
+            var fUsers = _context.FollowingUsers;
+            var id = currentUser.Id;
+
+            var listOfFollowers =
+                        from f in _context.FollowingUsers
+                        join u in _context.Users
+                            on f.AppUser.Id equals u.Id
+                        where u.Id == id
+                        select f.FollowingUserId;
+            var msg =
+                        from m in _context.Message
+                        where listOfFollowers.Contains(m.AppUser.Id)
+                        select m;
+
+            var message = msg.Include(m => m.Flags)
+                                .Include(m => m.AppUser)
+                                .Include(m => m.Responses)
+                                .Include(m => m.Votes);
+            return await message.ToListAsync();
         }
 
 
@@ -190,40 +213,9 @@ namespace WebApi.Controllers
             return vote;
         }
 
-        // // POST: api/Votes DOWNVOTE
-        // // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        // [HttpPost("Downvote/{id}")]
-        // public async Task<ActionResult<Vote>> PostDownVote(int id, Vote vote)
-        // {
-
-        //     //if upvote make 1 down vote -1
-        //     vote.Value = -1;
-        //     var currentUser = (User)HttpContext.Items["User"];
-        //     vote.AppUser = currentUser;
-        //     vote.MessageId = id;
-        //     _context.Vote.Add(vote);
-
-        //     await _context.SaveChangesAsync();
-
-        //     return CreatedAtAction("GetVote", new { id = vote.VoteId }, vote); //or should it be getMessage?
-        // }
-
-        // // POST: api/Votes UPVOTE
-        // // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        // [HttpPost("Upvote/{id}")]
-        // public async Task<ActionResult<Vote>> PostUpVote(int id, Vote vote)
-        // {
-        //     vote.Value = 1;
-        //     var currentUser = (User)HttpContext.Items["User"];
-        //     vote.AppUser = currentUser;
-        //     vote.MessageId = id;
-        //     _context.Vote.Add(vote);
-        //     await _context.SaveChangesAsync();
-
-        //     return CreatedAtAction("GetVote", new { id = vote.VoteId }, vote);
-        // }
 
         // POST: api/Votes set vote // this is for if they can submit a 1 or -1 on front end as voteValue for Messages
+        // no JSON raw data is required
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("voteMessage/{id}")]
         public async Task<ActionResult<Vote>> PostMessageVote(int id, int voteValue, Vote vote)
@@ -235,8 +227,19 @@ namespace WebApi.Controllers
             _context.Vote.Add(vote);
             await _context.SaveChangesAsync();
 
+            //summation query
+            var sumVotes = _context.Vote.Where(v => v.MessageId == id).Sum(v => v.Value); //get summation
+            var queryMsg = _context.Message.Single(m => m.MessageId == id); //retrieve message record for update
+
+            queryMsg.VoteSummary = sumVotes;
+            _context.Entry(queryMsg).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+
+
             return CreatedAtAction("GetVote", new { id = vote.VoteId }, vote);
         }
+
 
         // POST: api/Votes UPVOTE // this is for if they can submit a 1 or -1 on front end as voteValue for Responses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -246,17 +249,53 @@ namespace WebApi.Controllers
             vote.Value = voteValue;
             var currentUser = (User)HttpContext.Items["User"];
             vote.AppUser = currentUser;
-            vote.MessageResponseId = id;
+            vote.ResponseId = id;
             _context.Vote.Add(vote);
             await _context.SaveChangesAsync();
+
+            //summation query
+            var sumVotes = _context.Vote.Where(v => v.ResponseId == id).Sum(v => v.Value); //get summation
+            var queryRes = _context.Responses.Single(m => m.ResponseId == id); //retrieve message record for update
+
+            queryRes.VoteSummary = sumVotes;
+            _context.Entry(queryRes).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
 
             return CreatedAtAction("GetVote", new { id = vote.VoteId }, vote);
         }
 
-
+        // make delete vote for responses and messages, then add summation into the method
         // DELETE: api/Votes/5
-        [HttpDelete("vote/{id}")]
-        public async Task<IActionResult> DeleteVote(int id)
+        [HttpDelete("voteMessage/{id}")]
+        public async Task<IActionResult> DeleteVoteMess(int id)
+        {
+            // var voteid = _context.Vote.Where(v=>v.MessageId==id);
+            var vote = await _context.Vote.FindAsync(id);
+            if (vote == null)
+            {
+                return NotFound();
+            }
+
+            var msgId = vote.MessageId;
+            _context.Vote.Remove(vote);
+            await _context.SaveChangesAsync();
+
+            //summation query
+            var sumVotes = _context.Vote.Where(v => v.MessageId == msgId).Sum(v => v.Value); //get summation
+            var queryMsg = _context.Message.Single(m => m.MessageId == msgId); //retrieve message record for update
+
+            queryMsg.VoteSummary = sumVotes;
+            _context.Entry(queryMsg).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // make delete vote for responses and messages, then add summation into the method
+        // DELETE: api/Votes/5
+        [HttpDelete("voteResponse/{id}")]
+        public async Task<IActionResult> DeleteVoteResp(int id)
         {
             var vote = await _context.Vote.FindAsync(id);
             if (vote == null)
@@ -264,12 +303,20 @@ namespace WebApi.Controllers
                 return NotFound();
             }
 
+            var resId = vote.ResponseId;
             _context.Vote.Remove(vote);
+            await _context.SaveChangesAsync();
+
+            //summation query
+            var sumVotes = _context.Vote.Where(v => v.ResponseId == resId).Sum(v => v.Value); //get summation
+            var queryRes = _context.Responses.Single(m => m.ResponseId == resId); //retrieve message record for update
+
+            queryRes.VoteSummary = sumVotes;
+            _context.Entry(queryRes).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
-
         private bool VoteExists(int id)
         {
             return _context.Vote.Any(e => e.VoteId == id);
@@ -288,7 +335,7 @@ namespace WebApi.Controllers
                 DefaultIgnoreCondition = JsonIgnoreCondition.Never
             };
             var following = await _context.FollowingUsers
-                                            .Include(f=>f.AppUser)
+                                            .Include(f => f.AppUser)
                                             .ToListAsync();
             return following;
         }

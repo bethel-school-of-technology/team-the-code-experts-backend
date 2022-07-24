@@ -11,8 +11,8 @@ using WebApi.Helpers;
 namespace WebApi.Migrations.SqliteMigrations
 {
     [DbContext(typeof(SqliteDataContext))]
-    [Migration("20220718065051_1migration")]
-    partial class _1migration
+    [Migration("20220719002752_1MIGRATION")]
+    partial class _1MIGRATION
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -100,6 +100,9 @@ namespace WebApi.Migrations.SqliteMigrations
                     b.Property<int>("MessageId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("ResponseBody")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("ResponseId");
 
                     b.HasIndex("AppUserId");
@@ -118,10 +121,10 @@ namespace WebApi.Migrations.SqliteMigrations
                     b.Property<int?>("AppUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("MessageId")
+                    b.Property<int?>("MessageId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ResponseId")
+                    b.Property<int?>("ResponseId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Value")
@@ -214,15 +217,11 @@ namespace WebApi.Migrations.SqliteMigrations
 
                     b.HasOne("Broadcast_JWT.Models.Message", null)
                         .WithMany("Votes")
-                        .HasForeignKey("MessageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MessageId");
 
                     b.HasOne("Broadcast_JWT.Models.Response", null)
                         .WithMany("Votes")
-                        .HasForeignKey("ResponseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ResponseId");
 
                     b.Navigation("AppUser");
                 });

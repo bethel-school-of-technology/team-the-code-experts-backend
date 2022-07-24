@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebApi.Migrations.SqliteMigrations
 {
-    public partial class _1migration : Migration
+    public partial class _1MIGRATION : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -94,6 +94,7 @@ namespace WebApi.Migrations.SqliteMigrations
                     ResponseId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     MessageId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ResponseBody = table.Column<string>(type: "TEXT", nullable: true),
                     FlagId = table.Column<int>(type: "INTEGER", nullable: false),
                     AppUserId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
@@ -119,8 +120,8 @@ namespace WebApi.Migrations.SqliteMigrations
                 {
                     VoteId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    MessageId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ResponseId = table.Column<int>(type: "INTEGER", nullable: false),
+                    MessageId = table.Column<int>(type: "INTEGER", nullable: true),
+                    ResponseId = table.Column<int>(type: "INTEGER", nullable: true),
                     AppUserId = table.Column<int>(type: "INTEGER", nullable: true),
                     Value = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -131,14 +132,12 @@ namespace WebApi.Migrations.SqliteMigrations
                         name: "FK_Vote_Message_MessageId",
                         column: x => x.MessageId,
                         principalTable: "Message",
-                        principalColumn: "MessageId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "MessageId");
                     table.ForeignKey(
                         name: "FK_Vote_Responses_ResponseId",
                         column: x => x.ResponseId,
                         principalTable: "Responses",
-                        principalColumn: "ResponseId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ResponseId");
                     table.ForeignKey(
                         name: "FK_Vote_Users_AppUserId",
                         column: x => x.AppUserId,

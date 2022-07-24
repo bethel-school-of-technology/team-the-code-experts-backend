@@ -11,8 +11,8 @@ using WebApi.Helpers;
 namespace WebApi.Migrations.SqliteMigrations
 {
     [DbContext(typeof(SqliteDataContext))]
-    [Migration("20220718082806_4migration")]
-    partial class _4migration
+    [Migration("20220722031827_64MIGRATION")]
+    partial class _64MIGRATION
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -78,6 +78,9 @@ namespace WebApi.Migrations.SqliteMigrations
                     b.Property<string>("MessageTitle")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("VoteSummary")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("MessageId");
 
                     b.HasIndex("AppUserId");
@@ -94,10 +97,16 @@ namespace WebApi.Migrations.SqliteMigrations
                     b.Property<int?>("AppUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("FlagId")
+                    b.Property<int?>("FlagId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("MessageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ResponseBody")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("VoteSummary")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ResponseId");
@@ -119,9 +128,6 @@ namespace WebApi.Migrations.SqliteMigrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("MessageId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("MessageResponseId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("ResponseId")
@@ -158,6 +164,9 @@ namespace WebApi.Migrations.SqliteMigrations
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Username")
                         .HasColumnType("TEXT");

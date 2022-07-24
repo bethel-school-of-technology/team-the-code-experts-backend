@@ -5,7 +5,7 @@ namespace Broadcast_JWT.Models;
 public class Message
 {
     public int MessageId { get; set; }
-    
+
     public User AppUser { get; set; }
     // public int AppUserId { get; set; }
     public DateTime DateStamp { get; set; }
@@ -16,6 +16,7 @@ public class Message
     public IEnumerable<Vote> Votes { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]  //Ignore for POST activities
     public IEnumerable<Flag> Flags { get; set; }
+    public int VoteSummary { get; set; }
 
 
 }
