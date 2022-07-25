@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApi.Helpers;
 
@@ -10,9 +11,10 @@ using WebApi.Helpers;
 namespace WebApi.Migrations.SqliteMigrations
 {
     [DbContext(typeof(SqliteDataContext))]
-    partial class SqliteDataContextModelSnapshot : ModelSnapshot
+    [Migration("20220724222151_9MIGRATION")]
+    partial class _9MIGRATION
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
@@ -23,10 +25,7 @@ namespace WebApi.Migrations.SqliteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("AppUserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("MessageId")
+                    b.Property<int>("MessageId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ReasonId")
@@ -35,29 +34,16 @@ namespace WebApi.Migrations.SqliteMigrations
                     b.Property<int?>("ResponseId")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("FlagId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("AppUserId");
+                    b.HasKey("FlagId");
 
                     b.HasIndex("MessageId");
 
                     b.HasIndex("ResponseId");
 
                     b.ToTable("Flags");
-                });
-
-            modelBuilder.Entity("Broadcast_JWT.Models.FlagType", b =>
-                {
-                    b.Property<int>("FlagTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("FlagTypeId");
-
-                    b.ToTable("FlagTypes");
                 });
 
             modelBuilder.Entity("Broadcast_JWT.Models.FollowingUser", b =>
@@ -197,19 +183,15 @@ namespace WebApi.Migrations.SqliteMigrations
 
             modelBuilder.Entity("Broadcast_JWT.Models.Flag", b =>
                 {
-                    b.HasOne("WebApi.Entities.User", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId");
-
                     b.HasOne("Broadcast_JWT.Models.Message", null)
                         .WithMany("Flags")
-                        .HasForeignKey("MessageId");
+                        .HasForeignKey("MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Broadcast_JWT.Models.Response", null)
                         .WithMany("Flags")
                         .HasForeignKey("ResponseId");
-
-                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Broadcast_JWT.Models.FollowingUser", b =>

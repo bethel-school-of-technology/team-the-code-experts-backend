@@ -7,7 +7,6 @@ public class Message
     public int MessageId { get; set; }
 
     public User AppUser { get; set; }
-    // public int AppUserId { get; set; }
     public DateTime DateStamp { get; set; }
     public string MessageTitle { get; set; }
     public string MessageBody { get; set; }

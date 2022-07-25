@@ -9,10 +9,9 @@ public class Vote
 {
     [Key]
     public int VoteId { get; set; }
-    // public Message Message { get; set; }
     public int? MessageId { get; set; }
     public int? ResponseId { get; set; } // incase this is the parent message, this will be null
-    [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public User AppUser { get; set; }
 
     public int Value { get; set; }

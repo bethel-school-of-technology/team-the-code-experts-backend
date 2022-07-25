@@ -25,6 +25,7 @@ public class DataContext : DbContext
     public DbSet<Vote> Votes { get; set; }
     public DbSet<Flag> Flags { get; set; }
     public DbSet<Response> Responses { get; set; }
+    public DbSet<FlagType> FlagTypes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
