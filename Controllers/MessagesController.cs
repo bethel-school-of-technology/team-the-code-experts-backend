@@ -219,32 +219,38 @@ namespace WebApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMessage(int id, [Bind("MessageId,UserId,DateStamp,MessageTitle,MessageBody")] Message message)
         {
-
-            if (id != message.MessageId)
+            var currentUser = (User)HttpContext.Items["User"];
+            var cid = currentUser.Id;
+            if (currentUser.Id != message.AppUser.Id)
             {
-                return BadRequest();
+                return Unauthorized();                
             }
-
-            message.DateStamp = DateTime.Now;
-            _context.Entry(message).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MessageExists(id))
+            else
+                if (id != message.MessageId)
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return NoContent();
+                message.DateStamp = DateTime.Now;
+                _context.Entry(message).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MessageExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return NoContent();
         }
 
 
