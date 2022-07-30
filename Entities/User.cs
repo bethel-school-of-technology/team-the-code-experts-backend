@@ -11,7 +11,7 @@ public class User
     public string Email { get; set; }
     public string Username { get; set; }
     public int Role {get; set;}
-    [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public IEnumerable<FollowingUser> FollowingUsers { get; set; } //User will be one to many FUserIds
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
     public IEnumerable<Message> Messages { get; set; } //User will be one to many Messages

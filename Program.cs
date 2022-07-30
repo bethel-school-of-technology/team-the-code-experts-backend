@@ -5,6 +5,7 @@ using WebApi.Services;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -25,8 +26,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
     //Add JsonSerializer Options to prevent object cycles
     services.AddControllers()
-    .AddJsonOptions(o=>o.JsonSerializerOptions
-    .ReferenceHandler=ReferenceHandler.IgnoreCycles);
+    .AddJsonOptions(o => o.JsonSerializerOptions
+    .ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
     // configure automapper with all automapper profiles from this assembly
     services.AddAutoMapper(typeof(Program));
@@ -35,7 +36,19 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
     // configure Swagger 
-    services.AddMvc();
+    services.AddMvc(options =>
+{
+    options.AllowEmptyInputInBodyModelBinding = true;
+    foreach (var formatter in options.InputFormatters)
+    {
+        if (formatter.GetType() == typeof(SystemTextJsonInputFormatter))
+            ((SystemTextJsonInputFormatter)formatter).SupportedMediaTypes.Add(
+            Microsoft.Net.Http.Headers.MediaTypeHeaderValue.Parse("text/plain"));
+    }
+}).AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+});
     services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo

@@ -29,7 +29,7 @@ namespace WebApi.Controllers
             _userService = userService;
         }
 
-        // GET: api/Messages        ***ALL MESSAGES IN ASCENDING ORDER***
+        // GET: api/Messages        ***ALL MESSAGES IN NEWEST POST (DESCENDING) ORDER***
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Message>>> GetMessages()
         {
@@ -44,12 +44,15 @@ namespace WebApi.Controllers
                                 .Include(r => r.Responses)
                                 .ThenInclude(r => r.Votes.Where(v => v.AppUser.Id == id))
                                 .Include(r => r.Responses)
-                                .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == id));
+                                .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == id))
+                                .Include(f => f.AppUser)
+                                .ThenInclude(f => f.FollowingUsers)
+                                .OrderByDescending(m => m.DateStamp);
 
             return await msg.ToListAsync();
         }
 
-        // GET: api/Messages        ***ALL FLAGGED MESSAGES IN ASCENDING ORDER***
+        // GET: api/Messages        ***ALL FLAGGED MESSAGES IN OLDEST POST (ASCENDING - TO DELETE IN ORDER RECEIVED) ORDER***
         [HttpGet("Flagged")]
         public async Task<ActionResult<IEnumerable<Message>>> GetFlaggedMessages()
         {
@@ -65,14 +68,16 @@ namespace WebApi.Controllers
                                 .ThenInclude(r => r.Votes.Where(v => v.AppUser.Id == id))
                                 .Include(r => r.Responses)
                                 .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == id))
+                                .Include(f => f.AppUser)
+                                .ThenInclude(f => f.FollowingUsers)
                                 //Only include populated Flagged
                                 .Where(m => m.Flags != null && m.Flags.Any())
                                 .OrderBy(m => m.DateStamp);
             return await msg.ToListAsync();
         }
 
-        // GET: api/Messages        ***ALL MESSAGES IN DESCENDING ORDER***
-        [HttpGet("Descending")]
+        // GET: api/Messages        ***ALL MESSAGES IN OLDEST POST (ASCENDING) DATE ORDER***
+        [HttpGet("Ascending")]
         public async Task<ActionResult<IEnumerable<Message>>> GetMessagesDesc()
         {
             var currentUser = (User)HttpContext.Items["User"];
@@ -86,11 +91,13 @@ namespace WebApi.Controllers
                                 .Include(r => r.Responses)
                                 .ThenInclude(r => r.Votes.Where(v => v.AppUser.Id == id))
                                 .Include(r => r.Responses)
-                                .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == id));
-            return await msg.OrderByDescending(d => d.DateStamp).ToListAsync();
+                                .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == id))
+                                .Include(f => f.AppUser)
+                                .ThenInclude(f => f.FollowingUsers); 
+            return await msg.OrderBy(d => d.DateStamp).ToListAsync();
         }
 
-        // GET: api/MyMessages      ***ALL MESSAGES BY CURRENT USER***
+        // GET: api/MyMessages      ***ALL MESSAGES BY CURRENT USER IN NEWEST POST ORDER***
         [HttpGet("MyMessages")]
         public async Task<ActionResult<IEnumerable<Message>>> GetMyMessages()
         {
@@ -105,12 +112,15 @@ namespace WebApi.Controllers
                                         .Include(r => r.Responses)
                                         .ThenInclude(r => r.Votes.Where(v => v.AppUser.Id == id))
                                         .Include(r => r.Responses)
-                                        .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == id));
+                                        .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == id))
+                                        .Include(f=>f.AppUser)
+                                        .ThenInclude(f=>f.FollowingUsers)
+                                        .OrderByDescending(m => m.DateStamp);
 
             return await msg.ToListAsync();
         }
 
-        // GET: api/UserMessages        ***ALL MESSAGES BY USER ID***
+        // GET: api/UserMessages        ***ALL MESSAGES IN NEWEST POST ORDER BY USER ID***
         [HttpGet("UserMessages/{id}")]
         public async Task<ActionResult<IEnumerable<Message>>> GetUserMessages(int id)
         {
@@ -127,11 +137,14 @@ namespace WebApi.Controllers
                                         .ThenInclude(r => r.Votes.Where(v => v.AppUser.Id == cid))
                                         .Include(r => r.Responses)
                                         .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == cid))
-                                        .Where(my => my.AppUser.Id == id);
+                                        .Include(f=>f.AppUser)
+                                        .ThenInclude(f=>f.FollowingUsers)
+                                        .Where(my => my.AppUser.Id == id)
+                                        .OrderByDescending(m => m.DateStamp);
             return await msg.ToListAsync();
         }
 
-        // GET: api/UserMessages        ***ALL MESSAGES BY FOLLOWED USERS ID***
+        // GET: api/FollowingMessages        ***ALL MESSAGES IN NEWEST POST ORDER BY FOLLOWED USERS ID***
         [HttpGet("FollowingMessages/")]
         public async Task<ActionResult<IList<Message>>> GetFollowingUserMessages()
         {
@@ -159,7 +172,9 @@ namespace WebApi.Controllers
                                 .ThenInclude(r => r.Votes.Where(v => v.AppUser.Id == id))
                                 .Include(r => r.Responses)
                                 .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == id))
-                                .OrderBy(d => d.DateStamp);
+                                .Include(f=>f.AppUser)
+                                .ThenInclude(f=>f.FollowingUsers)
+                                .OrderByDescending(d => d.DateStamp);
             return await message.ToListAsync();
         }
 
@@ -180,6 +195,8 @@ namespace WebApi.Controllers
                                         .ThenInclude(r => r.Votes.Where(v => v.AppUser.Id == cid))
                                         .Include(r => r.Responses)
                                         .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == cid))
+                                        .Include(f=>f.AppUser)
+                                        .ThenInclude(f=>f.FollowingUsers)
                                         .SingleOrDefaultAsync(i => i.MessageId == id);
 
             if (msg == null)
@@ -191,17 +208,19 @@ namespace WebApi.Controllers
         }
 
 
-        // GET: api/Messages/5          ***SPECIFIC MESSAGES BY ID***
+        // GET: api/Response/5          ***SPECIFIC RESPONSES BY ID***
         [HttpGet("Response/{id}")]
         public async Task<ActionResult<Response>> GetResponse(int id)
         {
 
-          
+
             var currentUser = (User)HttpContext.Items["User"];
             var cid = currentUser.Id;
 
             var response = await _context.Responses.Include(r => r.Votes.Where(v => v.AppUser.Id == cid))
                                                     .Include(r => r.Flags.Where(f => f.AppUser.Id == cid))
+                                                    .Include(f=>f.AppUser)
+                                                    .ThenInclude(f=>f.FollowingUsers)
                                                     .Include(r => r.AppUser)
                                                     .SingleOrDefaultAsync(i => i.ResponseId == id);
 
@@ -223,34 +242,34 @@ namespace WebApi.Controllers
             var cid = currentUser.Id;
             if (currentUser.Id != message.AppUser.Id)
             {
-                return Unauthorized();                
+                return Unauthorized();
             }
             else
                 if (id != message.MessageId)
-                {
-                    return BadRequest();
-                }
+            {
+                return BadRequest();
+            }
 
-                message.DateStamp = DateTime.Now;
-                _context.Entry(message).State = EntityState.Modified;
+            message.DateStamp = DateTime.Now;
+            _context.Entry(message).State = EntityState.Modified;
 
-                try
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!MessageExists(id))
                 {
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!MessageExists(id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
+            }
 
-                return NoContent();
+            return NoContent();
         }
 
 
@@ -320,7 +339,7 @@ namespace WebApi.Controllers
             return _context.Message.Any(e => e.MessageId == id);
         }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~VOTING HTTP ACTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~VOTING HTTP ACTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         // GET: api/Votes/5                 ***GET VOTE BY ID***
         [HttpGet("Votes/{id}")]
@@ -459,7 +478,7 @@ namespace WebApi.Controllers
             return _context.Vote.Any(e => e.VoteId == id);
         }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FLAGS HTTP ACTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FLAGS HTTP ACTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
         // POST: api/MessageFlag/{id}               **CREATE FLAG FOR MESSAGE***
@@ -525,7 +544,7 @@ namespace WebApi.Controllers
 
 
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FOLLOWING USERS HTTP ACTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FOLLOWING USERS HTTP ACTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
         // GET: api/followingUsers                  ***GET FOLLOWING USERS OF CURRENT USER***

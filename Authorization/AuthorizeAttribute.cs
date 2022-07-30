@@ -17,7 +17,7 @@ public class AuthorizeAttribute : Attribute, IAuthorizationFilter
         // authorization
         var user = (User)context.HttpContext.Items["User"];
         if (user == null)
-            // context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
-            context.Result = new JsonResult(new { message = "Incorrect password or username taken" }) { StatusCode = StatusCodes.Status406NotAcceptable};
+            context.Result = new JsonResult(new { message = "Unauthorized" }) { StatusCode = StatusCodes.Status401Unauthorized };
+            // context.Result = new JsonResult(new { message = "Incorrect password or username taken" }) { StatusCode = StatusCodes.Status406NotAcceptable};
     }
 }
