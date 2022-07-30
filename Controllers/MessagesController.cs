@@ -29,7 +29,9 @@ namespace WebApi.Controllers
             _userService = userService;
         }
 
-        // GET: api/Messages        ***ALL MESSAGES IN NEWEST POST (DESCENDING) ORDER***
+        //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MESSAGE HTTP ACTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        // GET: api/Messages                                ***ALL MESSAGES IN NEWEST POST (DESCENDING) ORDER***
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Message>>> GetMessages()
         {
@@ -52,7 +54,7 @@ namespace WebApi.Controllers
             return await msg.ToListAsync();
         }
 
-        // GET: api/Messages        ***ALL FLAGGED MESSAGES IN OLDEST POST (ASCENDING - TO DELETE IN ORDER RECEIVED) ORDER***
+        // GET: api/Messages/Flagged                         ***ALL FLAGGED MESSAGES IN OLDEST POST (ASCENDING - TO DELETE IN ORDER RECEIVED) ORDER***
         [HttpGet("Flagged")]
         public async Task<ActionResult<IEnumerable<Message>>> GetFlaggedMessages()
         {
@@ -76,7 +78,7 @@ namespace WebApi.Controllers
             return await msg.ToListAsync();
         }
 
-        // GET: api/Messages        ***ALL MESSAGES IN OLDEST POST (ASCENDING) DATE ORDER***
+        // GET: api/Messages/Ascending                               ***ALL MESSAGES IN OLDEST POST (ASCENDING) DATE ORDER***
         [HttpGet("Ascending")]
         public async Task<ActionResult<IEnumerable<Message>>> GetMessagesDesc()
         {
@@ -97,7 +99,7 @@ namespace WebApi.Controllers
             return await msg.OrderBy(d => d.DateStamp).ToListAsync();
         }
 
-        // GET: api/MyMessages      ***ALL MESSAGES BY CURRENT USER IN NEWEST POST ORDER***
+        // GET: api/Messages/MyMessages                              ***ALL MESSAGES BY CURRENT USER IN NEWEST POST ORDER***
         [HttpGet("MyMessages")]
         public async Task<ActionResult<IEnumerable<Message>>> GetMyMessages()
         {
@@ -120,7 +122,7 @@ namespace WebApi.Controllers
             return await msg.ToListAsync();
         }
 
-        // GET: api/UserMessages        ***ALL MESSAGES IN NEWEST POST ORDER BY USER ID***
+        // GET: api//Messages/UserMessages                            ***ALL MESSAGES IN NEWEST POST ORDER BY USER ID***
         [HttpGet("UserMessages/{id}")]
         public async Task<ActionResult<IEnumerable<Message>>> GetUserMessages(int id)
         {
@@ -144,7 +146,7 @@ namespace WebApi.Controllers
             return await msg.ToListAsync();
         }
 
-        // GET: api/FollowingMessages        ***ALL MESSAGES IN NEWEST POST ORDER BY FOLLOWED USERS ID***
+        // GET: api/Messages/FollowingMessages                      ***ALL MESSAGES IN NEWEST POST ORDER BY FOLLOWED USERS ID***
         [HttpGet("FollowingMessages/")]
         public async Task<ActionResult<IList<Message>>> GetFollowingUserMessages()
         {
@@ -179,7 +181,7 @@ namespace WebApi.Controllers
         }
 
 
-        // GET: api/Messages/5          ***SPECIFIC MESSAGES BY ID***
+        // GET: api/Messages/5                             ***SPECIFIC MESSAGES BY ID***
         [HttpGet("{id}")]
         public async Task<ActionResult<Message>> GetMessage(int id)
         {
@@ -208,7 +210,7 @@ namespace WebApi.Controllers
         }
 
 
-        // GET: api/Response/5          ***SPECIFIC RESPONSES BY ID***
+        // GET: api/Messages/Response/5                     ***SPECIFIC RESPONSES BY ID***
         [HttpGet("Response/{id}")]
         public async Task<ActionResult<Response>> GetResponse(int id)
         {
@@ -233,7 +235,7 @@ namespace WebApi.Controllers
         }
 
 
-        // PUT: api/Messages/5              ***EDIT MESSAGE***
+        // PUT: api/Messages/5                             ***EDIT MESSAGE***
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMessage(int id, [Bind("MessageId,UserId,DateStamp,MessageTitle,MessageBody")] Message message)
@@ -274,7 +276,7 @@ namespace WebApi.Controllers
 
 
 
-        // POST: api/Messages               ***CREATE INITIAL MESSAGE***
+        // POST: api/Messages                             ***CREATE INITIAL MESSAGE***
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Message>> PostMessage(Message message)
@@ -293,7 +295,7 @@ namespace WebApi.Controllers
             return CreatedAtAction("GetMessage", new { id = message.MessageId }, message);
         }
 
-        // POST: api/Messages/Response               ***CREATE INITIAL RESPONSE***
+        // POST: api/Messages/Response                     ***CREATE INITIAL RESPONSE***
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("Response/{id}")]
         public async Task<ActionResult<Response>> PostResponse(Response response, int id)
@@ -313,7 +315,7 @@ namespace WebApi.Controllers
             return CreatedAtAction("GetResponse", new { id = response.ResponseId }, response);
         }
 
-        // DELETE: api/Messages/5           ***DELETE MESSAGE BY ID***
+        // DELETE: api/Messages/5                          ***DELETE MESSAGE BY ID***
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMessage(int id)
         {
@@ -341,7 +343,7 @@ namespace WebApi.Controllers
 
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~VOTING HTTP ACTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        // GET: api/Votes/5                 ***GET VOTE BY ID***
+        // GET: api/Messages/Votes/5                               ***GET VOTE BY ID***
         [HttpGet("Votes/{id}")]
         public async Task<ActionResult<Vote>> GetVote(int id)
         {
@@ -356,7 +358,7 @@ namespace WebApi.Controllers
         }
 
 
-        // POST: api/Votes set vote                 ***CREATE VOTE FOR A MESSAGE***
+        // POST: api/Messages/VoteMessage/5 set vote                     ***CREATE VOTE FOR A MESSAGE***
         // this is for if they can submit a 1 or -1 on front end as voteValue for Messages
         // no JSON raw data is required
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -384,7 +386,7 @@ namespace WebApi.Controllers
         }
 
 
-        // POST: api/Votes                         ***CREATE VOTE BY ID FOR A RESPONSE***
+        // POST: api/Messages/VoteResponse/5                               ***CREATE VOTE BY ID FOR A RESPONSE***
         // this is for if they can submit a 1 or -1 on front end as voteValue for Responses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("voteResponse/{id}")]
@@ -410,7 +412,7 @@ namespace WebApi.Controllers
         }
 
 
-        // DELETE: api/Votes/5                      ***DELETE VOTE BY ID FOR MESSAGE***
+        // DELETE: api/Messages/VoteMessage/5                          ***DELETE VOTE BY ID FOR MESSAGE***
         // delete vote for responses and messages, then add summation into the method
         [HttpDelete("voteMessage/{id}")]
         public async Task<IActionResult> DeleteVoteMess(int id)
@@ -442,7 +444,7 @@ namespace WebApi.Controllers
         }
 
 
-        // DELETE: api/Votes/5                      ***DELETE VOTE BY ID FOR RESPONSE***         
+        // DELETE: api/Messages/VoteResponse/5                            ***DELETE VOTE BY ID FOR RESPONSE***         
         // make delete vote for responses and messages, then add summation into the method
         [HttpDelete("voteResponse/{id}")]
         public async Task<IActionResult> DeleteVoteResp(int id)
@@ -481,9 +483,9 @@ namespace WebApi.Controllers
         //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FLAGS HTTP ACTIONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-        // POST: api/MessageFlag/{id}               **CREATE FLAG FOR MESSAGE***
+        // POST: api/Messages/MessageFlag/{id}                   **CREATE FLAG FOR MESSAGE***
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("MessageFlag/{id}")]
+        [HttpPost("MessageFlag/{id}")]               
         public async Task<ActionResult<FollowingUser>> PostMessageFlag(int id, Flag flag)
         {
 
@@ -497,7 +499,7 @@ namespace WebApi.Controllers
         }
 
 
-        // POST: api/ResponseFlag/{id}               **CREATE FLAG FOR RESPONSE***
+        // POST: api/Messages/ResponseFlag/{id}                 **CREATE FLAG FOR RESPONSE***
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("ResponseFlag/{id}")]
         public async Task<ActionResult<FollowingUser>> PostResponseFlag(int id, Flag flag)
@@ -512,7 +514,7 @@ namespace WebApi.Controllers
             return CreatedAtAction("GetFollowingUsers", new { id = flag.AppUser }, flag);
         }
 
-        // DELETE: api/flag/5              **DELETE FLAG BY ID***
+        // DELETE: api/Messages/flag/5                          **DELETE FLAG BY ID***
         [HttpDelete("flag/{id}")]
         public async Task<IActionResult> DeleteFlag(int id)
 
@@ -562,7 +564,7 @@ namespace WebApi.Controllers
             return following;
         }
 
-        // POST: api/FollowingUsers                 **CREATE FOLLOWING USERS FOR CURRENT USER***
+        // POST: api/Messages/FollowingUsers                    **CREATE FOLLOWING USERS FOR CURRENT USER***
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("followingUsers/{id}")]
         public async Task<ActionResult<FollowingUser>> PostVote(int id, FollowingUser followingUser)
@@ -577,11 +579,15 @@ namespace WebApi.Controllers
             return CreatedAtAction("GetFollowingUsers", new { id = followingUser.AppUser }, followingUser);
         }
 
-        // DELETE: api/followingUsers/5              **DELETE FOLLOWING USERS OF CURRENT USER***
+        // DELETE: api/Messages/followingUsers/5                 **DELETE FOLLOWING USERS OF CURRENT USER***
         [HttpDelete("followingUsers/{id}")]
         public async Task<IActionResult> DeleteFollowingUser(int id)
         {
-            var followingUser = await _context.FollowingUsers.FindAsync(id);
+            var currentUser = (User)HttpContext.Items["User"];
+            var followingUser = await _context.FollowingUsers
+                                                .Where(f=>f.FollowingUserId == id && f.AppUser==currentUser)
+                                                .SingleAsync();
+                                            
             if (followingUser == null)
             {
                 return NotFound();

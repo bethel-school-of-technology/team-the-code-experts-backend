@@ -52,6 +52,16 @@ public class UsersController : ControllerBase
         return Ok(users);
     }
 
+
+    [HttpGet("currentUser")]
+    public IActionResult GetCurrentUser()
+    {
+        var currentUser = (User)HttpContext.Items["User"];
+        var id = currentUser.Id;
+        var users = _userService.GetById(id);
+        return Ok(users);
+    }
+
     [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
@@ -78,7 +88,15 @@ public class UsersController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        _userService.Delete(id);
-        return Ok(new { message = "User deleted successfully" });
+        var currentUser = (User)HttpContext.Items["User"];
+        if (id == currentUser.Id || currentUser.Role == 1)
+        {
+            _userService.Delete(id);
+            return Ok(new { message = "User deleted successfully" });
+        }
+        else
+        {
+            return Unauthorized();
+        }
     }
 }
