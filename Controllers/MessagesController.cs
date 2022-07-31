@@ -38,8 +38,8 @@ namespace WebApi.Controllers
             var currentUser = (User)HttpContext.Items["User"];
             var id = currentUser.Id;
 
-            var msg = _context.Message.Include(m => m.Flags)
-                                .Include(m => m.AppUser)
+            var msg = _context.Message.Include(m => m.AppUser)
+                                .Include(f => f.Flags.Where(f => f.AppUser.Id == id))
                                 .Include(m => m.Votes.Where(v => v.AppUser.Id == id))
                                 .Include(r => r.Responses)
                                 .ThenInclude(r => r.AppUser)
@@ -61,8 +61,8 @@ namespace WebApi.Controllers
             var currentUser = (User)HttpContext.Items["User"];
             var id = currentUser.Id;
 
-            var msg = _context.Message.Include(m => m.Flags)
-                                .Include(m => m.AppUser)
+            var msg = _context.Message.Include(m => m.AppUser)
+                                .Include(f => f.Flags.Where(f => f.AppUser.Id == id))
                                 .Include(m => m.Votes.Where(v => v.AppUser.Id == id))
                                 .Include(r => r.Responses)
                                 .ThenInclude(r => r.AppUser)
@@ -85,8 +85,8 @@ namespace WebApi.Controllers
             var currentUser = (User)HttpContext.Items["User"];
             var id = currentUser.Id;
 
-            var msg = _context.Message.Include(m => m.Flags)
-                                .Include(m => m.AppUser)
+            var msg = _context.Message.Include(m => m.AppUser)
+                                .Include(f => f.Flags.Where(f => f.AppUser.Id == id))
                                 .Include(m => m.Votes.Where(v => v.AppUser.Id == id))
                                 .Include(r => r.Responses)
                                 .ThenInclude(r => r.AppUser)
@@ -95,7 +95,7 @@ namespace WebApi.Controllers
                                 .Include(r => r.Responses)
                                 .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == id))
                                 .Include(f => f.AppUser)
-                                .ThenInclude(f => f.FollowingUsers); 
+                                .ThenInclude(f => f.FollowingUsers);
             return await msg.OrderBy(d => d.DateStamp).ToListAsync();
         }
 
@@ -107,7 +107,7 @@ namespace WebApi.Controllers
             var id = currentUser.Id;
 
             var msg = _context.Message.Where(my => my.AppUser == currentUser)
-                                        .Include(m => m.Flags)
+                                        .Include(f => f.Flags.Where(f => f.AppUser.Id == id))
                                         .Include(m => m.Votes.Where(v => v.AppUser.Id == id))
                                         .Include(r => r.Responses)
                                         .ThenInclude(r => r.AppUser)
@@ -115,8 +115,8 @@ namespace WebApi.Controllers
                                         .ThenInclude(r => r.Votes.Where(v => v.AppUser.Id == id))
                                         .Include(r => r.Responses)
                                         .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == id))
-                                        .Include(f=>f.AppUser)
-                                        .ThenInclude(f=>f.FollowingUsers)
+                                        .Include(f => f.AppUser)
+                                        .ThenInclude(f => f.FollowingUsers)
                                         .OrderByDescending(m => m.DateStamp);
 
             return await msg.ToListAsync();
@@ -130,8 +130,8 @@ namespace WebApi.Controllers
             var currentUser = (User)HttpContext.Items["User"];
             var cid = currentUser.Id;
 
-            var msg = _context.Message.Include(m => m.Flags)
-                                        .Include(m => m.AppUser)
+            var msg = _context.Message.Include(m => m.AppUser)
+                                        .Include(f => f.Flags.Where(f => f.AppUser.Id == id))
                                         .Include(m => m.Votes.Where(v => v.AppUser.Id == cid))
                                         .Include(r => r.Responses)
                                         .ThenInclude(r => r.AppUser)
@@ -139,8 +139,8 @@ namespace WebApi.Controllers
                                         .ThenInclude(r => r.Votes.Where(v => v.AppUser.Id == cid))
                                         .Include(r => r.Responses)
                                         .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == cid))
-                                        .Include(f=>f.AppUser)
-                                        .ThenInclude(f=>f.FollowingUsers)
+                                        .Include(f => f.AppUser)
+                                        .ThenInclude(f => f.FollowingUsers)
                                         .Where(my => my.AppUser.Id == id)
                                         .OrderByDescending(m => m.DateStamp);
             return await msg.ToListAsync();
@@ -165,8 +165,8 @@ namespace WebApi.Controllers
                         where listOfFollowers.Contains(m.AppUser.Id)
                         select m;
 
-            var message = msg.Include(m => m.Flags)
-                                .Include(m => m.AppUser)
+            var message = msg.Include(m => m.AppUser)
+                                .Include(f => f.Flags.Where(f => f.AppUser.Id == id))
                                 .Include(m => m.Votes.Where(v => v.AppUser.Id == id))
                                 .Include(r => r.Responses)
                                 .ThenInclude(r => r.AppUser)
@@ -174,8 +174,8 @@ namespace WebApi.Controllers
                                 .ThenInclude(r => r.Votes.Where(v => v.AppUser.Id == id))
                                 .Include(r => r.Responses)
                                 .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == id))
-                                .Include(f=>f.AppUser)
-                                .ThenInclude(f=>f.FollowingUsers)
+                                .Include(f => f.AppUser)
+                                .ThenInclude(f => f.FollowingUsers)
                                 .OrderByDescending(d => d.DateStamp);
             return await message.ToListAsync();
         }
@@ -188,8 +188,8 @@ namespace WebApi.Controllers
             var currentUser = (User)HttpContext.Items["User"];
             var cid = currentUser.Id;
 
-            var msg = _context.Message.Include(m => m.Flags)
-                                        .Include(m => m.AppUser)
+            var msg = _context.Message.Include(m => m.AppUser)
+                                        .Include(f => f.Flags.Where(f => f.AppUser.Id == id))
                                         .Include(m => m.Votes.Where(v => v.AppUser.Id == cid))
                                         .Include(r => r.Responses)
                                         .ThenInclude(r => r.AppUser)
@@ -197,8 +197,8 @@ namespace WebApi.Controllers
                                         .ThenInclude(r => r.Votes.Where(v => v.AppUser.Id == cid))
                                         .Include(r => r.Responses)
                                         .ThenInclude(r => r.Flags.Where(f => f.AppUser.Id == cid))
-                                        .Include(f=>f.AppUser)
-                                        .ThenInclude(f=>f.FollowingUsers)
+                                        .Include(f => f.AppUser)
+                                        .ThenInclude(f => f.FollowingUsers)
                                         .SingleOrDefaultAsync(i => i.MessageId == id);
 
             if (msg == null)
@@ -221,8 +221,8 @@ namespace WebApi.Controllers
 
             var response = await _context.Responses.Include(r => r.Votes.Where(v => v.AppUser.Id == cid))
                                                     .Include(r => r.Flags.Where(f => f.AppUser.Id == cid))
-                                                    .Include(f=>f.AppUser)
-                                                    .ThenInclude(f=>f.FollowingUsers)
+                                                    .Include(f => f.AppUser)
+                                                    .ThenInclude(f => f.FollowingUsers)
                                                     .Include(r => r.AppUser)
                                                     .SingleOrDefaultAsync(i => i.ResponseId == id);
 
@@ -485,7 +485,7 @@ namespace WebApi.Controllers
 
         // POST: api/Messages/MessageFlag/{id}                   **CREATE FLAG FOR MESSAGE***
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("MessageFlag/{id}")]               
+        [HttpPost("MessageFlag/{id}")]
         public async Task<ActionResult<FollowingUser>> PostMessageFlag(int id, Flag flag)
         {
 
@@ -585,9 +585,9 @@ namespace WebApi.Controllers
         {
             var currentUser = (User)HttpContext.Items["User"];
             var followingUser = await _context.FollowingUsers
-                                                .Where(f=>f.FollowingUserId == id && f.AppUser==currentUser)
+                                                .Where(f => f.FollowingUserId == id && f.AppUser == currentUser)
                                                 .SingleAsync();
-                                            
+
             if (followingUser == null)
             {
                 return NotFound();
