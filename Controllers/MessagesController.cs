@@ -160,12 +160,22 @@ namespace WebApi.Controllers
                             on f.AppUser.Id equals u.Id
                         where u.Id == id
                         select f.FollowingUserId;
+
+            var currentMessages =
+                        from cm in _context.Message
+                        where cm.AppUser.Id == id
+                        select  cm;     
+
             var msg =
                         from m in _context.Message
-                        where listOfFollowers.Contains(m.AppUser.Id)
+                        where (listOfFollowers.Contains(m.AppUser.Id)) //|| (currentMessages.Equals(m.AppUser.Id))
+                        
                         select m;
 
-            var message = msg.Include(m => m.AppUser)
+            var finalQuery = msg.Union(currentMessages);
+
+            var message = finalQuery.Include(m => m.AppUser)
+                                
                                 .Include(f => f.Flags.Where(f => f.AppUser.Id == id))
                                 .Include(m => m.Votes.Where(v => v.AppUser.Id == id))
                                 .Include(r => r.Responses)
